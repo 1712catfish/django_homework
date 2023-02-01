@@ -4,7 +4,7 @@ Follow the [Django Custom User Model Tutorial](https://testdriven.io/blog/django
 1. Create virtual environment
 2. Create new Django project
 3. Create `CustomUser` (prefer `AbstractUser` to `AbstractBaseUser`)
-4. Create `CustomUserManager` (**Note:** Change name of `create_user` function to `create`)
+4. Create `CustomUserManager` (**Note:** change name of `create_user` function to `create`)
 
 Then create a `requirements.txt` file in root directory:
 ```text
@@ -15,12 +15,10 @@ djangorestframework_simplejwt
 psycopg2 # For PostgresSQL
 ```
 
-## Clone boilerplate code
-For authentication template, see [djoser repo](https://github.com/sunscrapers/djoser).
+## First steps
+For django authentication example, see [djoser repo](https://github.com/sunscrapers/djoser).
 
-#### In `users` directory
-
-Create a `permissions.py` file then clone `CurrentUserOrAdmin` and `CurrentUserOrAdminOrReadOnly` permission classes from `djoser/permissions.py` 
+Create a `permissions.py` file in `users` directory then clone `CurrentUserOrAdmin` and `CurrentUserOrAdminOrReadOnly` permission classes from `djoser/permissions.py` 
 ```python
 """Cloned from djoser/permissions.py"""
 class CurrentUserOrAdmin(permissions.IsAuthenticated):
@@ -29,7 +27,7 @@ class CurrentUserOrAdmin(permissions.IsAuthenticated):
         return user.is_staff or obj.pk == user.pk
 ```
 
-Create a `constants.py` file then clone common error messages from `djoser/constants.py`
+Create a `constants.py` file in `users` directory then clone common error messages from `djoser/constants.py`
 ```python
 """Cloned from djoser/constants.py"""
 class Messages(object):
@@ -38,7 +36,7 @@ class Messages(object):
     ...
 ```
 
-Create a `serializers.py` file then clone useful serializers from `djoser/serializers.py`. In this repo, `CurrentPasswordSerializer`, `PasswordSerializer`, and `SetPasswordSerializer` is cloned.
+Create a `serializers.py` file in `users` directory then clone useful serializers from `djoser/serializers.py`. In this repo, `CurrentPasswordSerializer`, `PasswordSerializer`, and `SetPasswordSerializer` is cloned.
 
 **Note:** add `User = get_user_model()` before serializer classes so Django use custom user model.
 
@@ -46,6 +44,7 @@ Create a `serializers.py` file then clone useful serializers from `djoser/serial
 ```python
 User = get_user_model()
 
+"""Cloned from djoser/serializers.py"""
 class CurrentPasswordSerializer(serializers.Serializer):
     """Validate current password"""
     current_password = serializers.CharField(style={"input_type": "password"})
@@ -59,7 +58,7 @@ class CustomPasswordSerializer(CurrentPasswordSerializer, NewPasswordSerializer)
     pass
 ```
 
-## Tailor code to project
+## Customizing the project
 
 #### Edit `utils.py`
 1. Create a `utils.py` file then clone useful functions from `djoser/utils.py`.
@@ -91,7 +90,7 @@ For more details, see [restframework docs](https://www.django-rest-framework.org
 6. Clone `def set_password(self, request, *args, **kwargs):` to allow users to change password.
 
 #### Edit app level `urls.py`
-1. Add generic `urlpatterns`:
+Add generic `urlpatterns`:
 ```python
 User = get_user_model()
 router = DefaultRouter()
@@ -116,7 +115,7 @@ schema_view = get_schema_view(
    permission_classes=[permissions.AllowAny],
 )
 ```
-**Note:** in large projects, `public` and `permissions_classes` arguments should be customized.
+**Note:** in larger projects, `public` and `permissions_classes` arguments should be customized.
 
 2. Add `users`'s urls:
 ```python
@@ -156,6 +155,11 @@ REST_FRAMEWORK = {
 ```
 
 #### Run server and test using Postman.
+
+**Note:** place access token in collection's `Authorization` > `Bearer Token` > `Token` then in request, set `Authorization` > `Inherit auth from parent`. 
+
+**Note:** set variables in collection's `Variables`.
+
 #### Connect to Postgres
 1. Install and setup Postgres 
 - [On Windows (via pgAdmin)](https://www.guru99.com/download-install-postgresql.html)
@@ -173,9 +177,8 @@ DATABASES = {
     }
 }
 ```
-**Note:** Database access information `NAME, USER, PASSWORD` should be stored in environment variable.
+**Note:** in larger projects, database access information `NAME, USER, PASSWORD` should be stored in environment variable.
 
-**Note:** To look up postgres database username, open server's `Properties` tab.
+**Note:** to look up postgres database username, open pgAdmin server's `Properties` tab.
 
-**Note:** Create database in pgAdmin if encounter error `FATAL:  datab
-ase "myproject" does not exist`.
+**Note:** create database in pgAdmin if encounter error `FATAL:  database "myproject" does not exist`.
