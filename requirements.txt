@@ -1,0 +1,5 @@
+django
+djangorestframework
+drf-yasg
+djangorestframework_simplejwt
+psycopg2 # For PostgresSQL

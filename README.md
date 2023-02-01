@@ -217,6 +217,3 @@ DATABASES = {
 ase "myproject" does not exist`
 
 #### Save to Github
-
-#   d j a n g o _ h o m e w o r k  
- 
